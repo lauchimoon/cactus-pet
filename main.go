@@ -1,91 +1,91 @@
 package main
 
 import (
-    "log"
+	"bytes"
+	"image"
+	"image/color"
+	"image/png"
+	"log"
+
 	e "github.com/hajimehoshi/ebiten/v2"
-    "image/color"
-    "image/png"
-    "image"
-    "github.com/lauchimoon/cactus-pet/resources/images"
-    "bytes"
+	"github.com/lauchimoon/cactus-pet/resources/images"
 )
 
 var (
-    cactusImage *e.Image
-    x int
-    y int
-    dir int
-
-    animX int = 0
-    animY int = 0
-    frameWidth int = 128
-    frameHeight int = 128
-    frameCounter int = 0
-
-    flipped bool = false
-
-    monitorWidth int
-    monitorHeight int
+	cactusImage *e.Image
 )
 
-type Game struct {}
+type Game struct {
+	CactusX   int
+	CactusY   int
+	CactusDir int
+
+	CactusAnimX            int
+	CactusAnimY            int
+	CactusAnimFrameWidth   int
+	CactusAnimFrameHeight  int
+	CactusAnimFrameCounter int
+
+	CactusFlipped bool
+
+	MonitorWidth  int
+	MonitorHeight int
+}
 
 func init() {
-    var err error
-    img, err := png.Decode(bytes.NewReader(images.Cactus_png))
-    if err != nil {
-        log.Fatal(err)
-    }
-    cactusImage = e.NewImageFromImage(img)
-
-    dir = 1
+	var err error
+	img, err := png.Decode(bytes.NewReader(images.Cactus_png))
+	if err != nil {
+		log.Fatal(err)
+	}
+	cactusImage = e.NewImageFromImage(img)
 }
 
 func (g *Game) Update() error {
-    x += 2*dir
-    if x >= monitorWidth - frameWidth || x <= 0 {
-        dir *= -1
-        flipped = !flipped
-    }
+	g.CactusX += 2 * g.CactusDir
+	if g.CactusX >= g.MonitorWidth-g.CactusAnimFrameWidth || g.CactusX <= 0 {
+		g.CactusDir *= -1
+		g.CactusFlipped = !g.CactusFlipped
+	}
 
-    // animation
-    frameCounter++
-    if frameCounter >= 10 {
-        animX = 128
-    } else {
-        animX = 0
-    }
+	// animation
+	g.CactusAnimFrameCounter++
+	if g.CactusAnimFrameCounter >= 10 {
+		g.CactusAnimX = 128
+	} else {
+		g.CactusAnimX = 0
+	}
 
-    if frameCounter >= 20 {
-        frameCounter = 0
-    }
+	if g.CactusAnimFrameCounter >= 20 {
+		g.CactusAnimFrameCounter = 0
+	}
 
-    e.SetWindowPosition(x, y)
+	e.SetWindowPosition(g.CactusX, g.CactusY)
 
-    return nil
+	return nil
 }
 
 func (g *Game) Draw(screen *e.Image) {
-    screen.Fill(color.RGBA{0, 0, 0, 0})
-    rec := image.Rect(animX, animY, animX + frameWidth, frameHeight)
+	screen.Fill(color.RGBA{0, 0, 0, 0})
+	rec := image.Rect(g.CactusAnimX, g.CactusAnimY, g.CactusAnimX+g.CactusAnimFrameWidth, g.CactusAnimFrameHeight)
 
-    screen.DrawImage(cactusImage.SubImage(rec).(*e.Image), nil)
-    //screen.DrawImage(cactusImage, nil)
+	screen.DrawImage(cactusImage.SubImage(rec).(*e.Image), nil)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-    return 128, 128
+	return 128, 128
 }
 
 func main() {
-    game := &Game{}
-    e.SetWindowSize(128, 128)
-    e.SetWindowTitle("Hello world")
-    e.SetWindowDecorated(false)
+	game := &Game{}
+	e.SetWindowSize(128, 128)
+	e.SetWindowTitle("Hello world")
+	e.SetWindowDecorated(false)
 
-    monitorWidth, monitorHeight = e.ScreenSizeInFullscreen()
-    y = monitorHeight - 200
-    if err := e.RunGameWithOptions(game, &e.RunGameOptions{ScreenTransparent: true, }); err != nil {
-        log.Fatal(err)
-    }
+	game.CactusDir = 1
+	game.MonitorWidth, game.MonitorHeight = e.ScreenSizeInFullscreen()
+	game.CactusY = game.MonitorHeight - 200
+	if err := e.RunGameWithOptions(game, &e.RunGameOptions{ScreenTransparent: true}); err != nil {
+		log.Fatal(err)
+	}
 }
