@@ -26,8 +26,6 @@ type Game struct {
 	CactusAnimFrameHeight  int
 	CactusAnimFrameCounter int
 
-	CactusFlipped bool
-
 	MonitorWidth  int
 	MonitorHeight int
 }
@@ -45,7 +43,6 @@ func (g *Game) Update() error {
 	g.CactusX += 2 * g.CactusDir
 	if g.CactusX >= g.MonitorWidth-g.CactusAnimFrameWidth || g.CactusX <= 0 {
 		g.CactusDir *= -1
-		g.CactusFlipped = !g.CactusFlipped
 	}
 
 	// animation
@@ -77,7 +74,15 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	game := &Game{}
+	game := &Game{
+		CactusX:                0,
+		CactusDir:              1,
+		CactusAnimX:            0,
+		CactusAnimY:            0,
+		CactusAnimFrameWidth:   128,
+		CactusAnimFrameHeight:  128,
+		CactusAnimFrameCounter: 0,
+	}
 	e.SetWindowSize(128, 128)
 	e.SetWindowTitle("Hello world")
 	e.SetWindowDecorated(false)
