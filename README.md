@@ -1,5 +1,6 @@
 # Cactus Pet
-Small guy who walks around your screen... nothing too fancy
+Virtual pet that walks around your screen... nothing too fancy
+![In action](https://github.com/lauchimoon/cactus-pet/blob/main/resources/ss.png?raw=True)
 
 ## Dependencies
 - ebitengine
