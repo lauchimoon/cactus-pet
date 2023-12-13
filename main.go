@@ -83,9 +83,11 @@ func main() {
 		CactusAnimFrameHeight:  128,
 		CactusAnimFrameCounter: 0,
 	}
+
 	e.SetWindowSize(128, 128)
 	e.SetWindowTitle("Hello world")
 	e.SetWindowDecorated(false)
+	e.SetWindowFloating(true)
 
 	game.CactusDir = 1
 	game.MonitorWidth, game.MonitorHeight = e.ScreenSizeInFullscreen()
